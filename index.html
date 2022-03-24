@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/style.css" />
+        <title>Minesweeper</title>
+    </head>
+    <body onload="initGame()">
+        <div class="difficulties">
+            <button onclick="setDifficulty(4,2)">EASY</button>
+            <button onclick="setDifficulty(8,12)">MEDIUM</button>
+            <button onclick="setDifficulty(12,30)">HARD</button>
+        </div>
+
+        <h1 class="lives">❤️ x <span></span></h1>
+        <!-- <h1 class="hints" onclick="getHint(this)">💡 x <span></span></h1> -->
+        <button class="smiley" onclick="restartGame()"></button>
+        <div class="timer"></div>
+        <table class="board">
+            <tbody></tbody>
+        </table>
+        <footer>
+            <p>©️ Uri Gruda</p>
+        </footer>
+        <script src="js/util.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

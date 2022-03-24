@@ -1,0 +1,144 @@
+* {
+    box-sizing: content-box;
+}
+
+body {
+    color: rgb(223, 223, 223);
+    text-align: center;
+    background-color: rgb(64, 128, 128);
+}
+
+.timer {
+    font-size: 50px;
+    margin: auto;
+}
+
+.difficulties {
+    padding-top: 10px;
+}
+
+.difficulties button {
+    font-size: 16px;
+    cursor: pointer;
+    color: rgb(223, 223, 223);
+    background-color: rgb(32, 32, 32);
+    border: 0px;
+    padding: 16px;
+    border-radius: 25px;
+}
+
+.difficulties button:hover {
+    background-color: rgb(16, 16, 16);
+}
+
+.hints img {
+    width: 25px;
+}
+
+/* .hints {
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    color: rgb(223, 223, 223);
+    text-align: center;
+    background-color: transparent;
+    border: 0px;
+    font-size: 2em;
+}
+
+.hints span {
+    position: absolute;
+} */
+
+.smiley {
+    display: block;
+    margin: auto;
+}
+
+.board {
+    margin: auto;
+    margin-top: 2%;
+}
+
+td {
+    font-size: 25px;
+    background-color: rgb(223, 223, 223);
+    /* border: 2px solid skyblue; */
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.hidden {
+    background-color: rgb(255, 194, 95);
+}
+
+.hidden:hover {
+    background-color: rgb(255, 169, 30);
+}
+
+.hidden span {
+    display: none;
+}
+
+.marked {
+    background-color: rgb(255, 194, 95);
+    background-image: url(../images/flag.png);
+    background-repeat: no-repeat;
+    background-size: 50%;
+    background-position: center;
+}
+
+.marked span {
+    display: none;
+}
+
+.marked:hover {
+    background-color: rgb(255, 169, 30);
+}
+
+.smiley {
+    background-color: transparent;
+    font-size: 100px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 0px;
+}
+
+.content0 span {
+    display: none;
+}
+
+.content1 span {
+    color: blue;
+}
+
+.content2 span {
+    color: green;
+}
+.content3 span {
+    color: red;
+}
+
+.content4 span {
+    color: darkred;
+}
+.content5 span {
+    color: darkblue;
+}
+.content6 span {
+    color: darkgreen;
+}
+.content7 span {
+    color: black;
+}
+.content8 span {
+    color: grey;
+}
+
+footer {
+    padding-top: 8px;
+    position: absolute;
+    left: 48%;
+    bottom: 8px;
+}
