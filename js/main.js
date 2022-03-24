@@ -12,6 +12,7 @@ const HINT = '💡'
 // The model
 var gBoard
 var gLives
+var gHealthBar
 var gTimerInterval
 
 // This is an object by which the
@@ -46,14 +47,14 @@ function initGame() {
     document.addEventListener('contextmenu', (event) => event.preventDefault())
 
     document.querySelector('.best-time span').innerText = localStorage.getItem('bestScore')
-
+    gHealthBar = LIFE + LIFE + LIFE
     gLives = 3
     gHints = 3
     gHintMode = false
     var elHints = document.querySelector('.hints')
     elHints.innerText = HINT + ' x ' + gHints
     elHints.classList.add('disabled')
-    document.querySelector('.lives').innerText = LIFE + ' x ' + gLives
+    document.querySelector('.lives').innerText = gHealthBar
     document.querySelector('.smiley').innerText = NORMAL
     document.querySelector('.timer').innerText = gGame.secsPassed
     buildBoard()
@@ -136,7 +137,8 @@ function cellClicked(i, j) {
     renderBoard(gBoard)
     if (cell.isMine) {
         gLives--
-        document.querySelector('.lives').innerText = LIFE + ' x ' + gLives
+        gHealthBar = gHealthBar.slice(0, gHealthBar.length - 2)
+        document.querySelector('.lives').innerText = gHealthBar
         if (!gLives) gameOver()
     }
     if (checkGameOver()) gameOver()

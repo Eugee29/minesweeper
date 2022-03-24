@@ -54,7 +54,7 @@ button {
 
 .hints.activated {
     outline: 2px solid yellow;
-    background-color: gray;
+    background-color: rgb(128, 32, 32);
 }
 
 .hints.disabled {
