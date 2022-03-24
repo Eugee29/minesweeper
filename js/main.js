@@ -1,14 +1,18 @@
 'use strict'
 
-console.log('Mine Sweeper!')
+console.log('Minesweeper')
+
+const MINE = '💣'
+const NORMAL = '😀'
+const LOSE = '🤯'
+const WIN = '😎'
+const LIFE = '❤️'
+const HINT = '💡'
 
 // The model
 var gBoard
 var gLives
-// var gHints
-// var gHintMode
 var gTimerInterval
-const MINE = '💣'
 
 // This is an object by which the
 // board size is set (in this case:
@@ -40,12 +44,17 @@ var gGame = {
 // DONE: This is called when page loads
 function initGame() {
     document.addEventListener('contextmenu', (event) => event.preventDefault())
+
+    document.querySelector('.best-time span').innerText = localStorage.getItem('bestScore')
+
     gLives = 3
-    // gHints = 3
-    // gHintMode = false
-    // document.querySelector('.hints span').innerText = gHints
-    document.querySelector('.lives span').innerText = gLives
-    document.querySelector('.smiley').innerText = '😃'
+    gHints = 3
+    gHintMode = false
+    var elHints = document.querySelector('.hints')
+    elHints.innerText = HINT + ' x ' + gHints
+    elHints.classList.add('disabled')
+    document.querySelector('.lives').innerText = LIFE + ' x ' + gLives
+    document.querySelector('.smiley').innerText = NORMAL
     document.querySelector('.timer').innerText = gGame.secsPassed
     buildBoard()
     renderBoard(gBoard)
@@ -96,7 +105,6 @@ function renderBoard(board) {
             var className = cell.isShown ? '' : 'hidden'
             className = cell.isMarked ? 'marked' : className
             var cellContent = cell.isMine ? MINE : cell.minesAroundCount
-            // if (!cellContent) cellContent = ''
             elRow.innerHTML += `<td class="${className} content${cellContent}" id="i-${i} j-${j}" onclick="cellClicked(${i},${j})" oncontextmenu="cellMarked(${i},${j})"><span>${cellContent}</span></td>`
         }
     }
@@ -106,11 +114,21 @@ function renderBoard(board) {
 function cellClicked(i, j) {
     var cell = gBoard[i][j]
     if (cell.isMarked || cell.isShown) return
+    if (gHintMode) {
+        document.querySelector('.hints').classList.toggle('activated')
+        revealNegs(gBoard, { i, j })
+        gHintMode = false
+        gHints--
+        renderBoard(gBoard)
+        document.querySelector('.hints').innerText = '💡 x ' + gHints
+        return
+    }
     cell.isShown = true
     gGame.shownCount++
     if (gGame.shownCount === 1) {
         gGame.isOn = true
         placeMines(gBoard)
+        document.querySelector('.hints').classList.toggle('disabled')
         gTimerInterval = setInterval(startTimer, 1000)
     }
     if (!gGame.isOn) return
@@ -118,7 +136,7 @@ function cellClicked(i, j) {
     renderBoard(gBoard)
     if (cell.isMine) {
         gLives--
-        document.querySelector('.lives span').innerText = gLives
+        document.querySelector('.lives').innerText = LIFE + ' x ' + gLives
         if (!gLives) gameOver()
     }
     if (checkGameOver()) gameOver()
@@ -205,10 +223,19 @@ function gameOver() {
     clearInterval(gTimerInterval)
     var elSmiley = document.querySelector('.smiley')
     if (gLives === 0) {
-        elSmiley.innerText = '🤯'
+        elSmiley.innerText = LOSE
         revealAllMines(gBoard)
         renderBoard(gBoard)
-    } else elSmiley.innerText = '😎'
+        return
+    }
+    var bestScore = localStorage.getItem('bestScore')
+    if (!bestScore) localStorage.setItem('bestScore', gGame.secsPassed)
+    else if (bestScore > gGame.secsPassed) {
+        bestScore = gGame.secsPassed
+        localStorage.setItem('bestScore', bestScore)
+    }
+    document.querySelector('.best-time span').innerText = bestScore
+    elSmiley.innerText = WIN
 }
 
 function restartGame() {
@@ -239,9 +266,3 @@ function setDifficulty(size, mines) {
     gLevel.MINES = mines
     restartGame()
 }
-
-// function getHint(elHint) {
-//     gHintMode = !gHintMode
-//     if (gHintMode) elHint.innerText = `💡 x ${gHints}`
-//     else elHint.innerText = `⚡ x ${gHints}`
-// }

@@ -13,11 +13,11 @@
             <button onclick="setDifficulty(8,12)">MEDIUM</button>
             <button onclick="setDifficulty(12,30)">HARD</button>
         </div>
-
-        <h1 class="lives">❤️ x <span></span></h1>
-        <!-- <h1 class="hints" onclick="getHint(this)">💡 x <span></span></h1> -->
         <button class="smiley" onclick="restartGame()"></button>
         <div class="timer"></div>
+        <div class="best-time">BEST TIME: <span></span></div>
+        <h1 class="lives"></h1>
+        <button class="hints" onclick="toggleHint(this)"></button>
         <table class="board">
             <tbody></tbody>
         </table>
@@ -26,5 +26,6 @@
         </footer>
         <script src="js/util.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/bonus.js"></script>
     </body>
 </html>
