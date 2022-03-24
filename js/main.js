@@ -106,7 +106,7 @@ function renderBoard(board) {
             var className = cell.isShown ? '' : 'hidden'
             className = cell.isMarked ? 'marked' : className
             var cellContent = cell.isMine ? MINE : cell.minesAroundCount
-            elRow.innerHTML += `<td class="${className} content${cellContent}" id="i-${i} j-${j}" onclick="cellClicked(${i},${j})" oncontextmenu="cellMarked(${i},${j})"><span>${cellContent}</span></td>`
+            elRow.innerHTML += `<td class="${className} content${cellContent}" onclick="cellClicked(${i},${j})" oncontextmenu="cellMarked(${i},${j})"><span>${cellContent}</span></td>`
         }
     }
 }
@@ -152,8 +152,8 @@ function cellClicked(i, j) {
 function cellMarked(i, j) {
     var cell = gBoard[i][j]
     if (cell.isShown) return
+    if (!gGame.isOn && gGame.shownCount) return
     cell.isMarked = !cell.isMarked
-
     if (cell.isMarked && cell.isMine) gGame.markedCount++
     else if (cell.isMine) gGame.markedCount--
     renderBoard(gBoard)
