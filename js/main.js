@@ -8,12 +8,14 @@ const LOSE = '🤯'
 const WIN = '😎'
 const LIFE = '❤️'
 const HINT = '💡'
+const SAFE_CLICK = '🔍'
 
 // The model
 var gBoard
 var gLives
 var gHealthBar
 var gTimerInterval
+var gAreMinesPlaced
 
 // This is an object by which the
 // board size is set (in this case:
@@ -45,15 +47,24 @@ var gGame = {
 // DONE: This is called when page loads
 function initGame() {
     document.addEventListener('contextmenu', (event) => event.preventDefault())
-
     document.querySelector('.best-time span').innerText = localStorage.getItem('bestScore')
+    document.querySelector(`.size${gLevel.SIZE}`).classList.toggle('activated')
     gHealthBar = LIFE + LIFE + LIFE
+    gMinesPlaced = 0
+    gSafeClick = 3
     gLives = 3
     gHints = 3
+    gAreMinesPlaced = false
     gHintMode = false
+    gManualPosMode = false
+    gSevenBoomMode = false
     var elHints = document.querySelector('.hints')
     elHints.innerText = HINT + ' x ' + gHints
     elHints.classList.add('disabled')
+    var elSafeClicks = document.querySelector('.safe-clicks')
+    elSafeClicks.innerText = SAFE_CLICK + ' x ' + gSafeClick
+    elSafeClicks.classList.add('disabled')
+    document.querySelector('.manual-place').innerText = 'MANUAL POSITION MODE'
     document.querySelector('.lives').innerText = gHealthBar
     document.querySelector('.smiley').innerText = NORMAL
     document.querySelector('.timer').innerText = gGame.secsPassed
@@ -106,7 +117,7 @@ function renderBoard(board) {
             var className = cell.isShown ? '' : 'hidden'
             className = cell.isMarked ? 'marked' : className
             var cellContent = cell.isMine ? MINE : cell.minesAroundCount
-            elRow.innerHTML += `<td class="${className} content${cellContent}" onclick="cellClicked(${i},${j})" oncontextmenu="cellMarked(${i},${j})"><span>${cellContent}</span></td>`
+            elRow.innerHTML += `<td id="cell-${i}-${j}" class="${className} content${cellContent}" onclick="cellClicked(${i},${j})" oncontextmenu="cellMarked(${i},${j})"><span>${cellContent}</span></td>`
         }
     }
 }
@@ -114,34 +125,56 @@ function renderBoard(board) {
 // DONE: Called when a cell (td) is clicked
 function cellClicked(i, j) {
     var cell = gBoard[i][j]
+
     if (cell.isMarked || cell.isShown) return
-    if (gHintMode) {
-        document.querySelector('.hints').classList.toggle('activated')
+
+    if (checkGameOver()) return
+
+    if (gManualPosMode && !cell.isMine) {
+        cell.isMine = true
+        cell.isShown = true
+        gMinesPlaced++
+        document.querySelector('.manual-place').innerText = gMinesPlaced + ' / ' + gLevel.MINES
+        if (gMinesPlaced === gLevel.MINES) {
+            hideAllCells(gBoard)
+            setMinesNegsCount(gBoard)
+            gManualPosMode = false
+            gAreMinesPlaced = true
+        }
+        renderBoard(gBoard)
+    } else if (gHintMode) {
+        var elHints = document.querySelector('.hints')
+        elHints.classList.toggle('activated')
         revealNegs(gBoard, { i, j })
         gHintMode = false
         gHints--
+        if (!gHints) elHints.classList.toggle('disabled')
+        elHints.innerText = '💡 x ' + gHints
         renderBoard(gBoard)
-        document.querySelector('.hints').innerText = '💡 x ' + gHints
-        return
+    } else {
+        cell.isShown = true
+        gGame.shownCount++
+        if (!gGame.isOn) {
+            gTimerInterval = setInterval(startTimer, 1000)
+            document.querySelector('.hints').classList.toggle('disabled')
+            document.querySelector('.safe-clicks').classList.toggle('disabled')
+            gGame.isOn = !gGame.isOn
+        }
+
+        if (!gAreMinesPlaced) {
+            placeMines(gBoard)
+            setMinesNegsCount(gBoard)
+            gAreMinesPlaced = true
+        }
+        if (!cell.minesAroundCount && !cell.isMine) expandShown(gBoard, { i, j })
+        renderBoard(gBoard)
+        if (cell.isMine) {
+            gLives--
+            gHealthBar = gHealthBar.slice(0, gHealthBar.length - 2)
+            document.querySelector('.lives').innerText = gHealthBar
+        }
+        if (checkGameOver()) gameOver()
     }
-    cell.isShown = true
-    gGame.shownCount++
-    if (gGame.shownCount === 1) {
-        gGame.isOn = true
-        placeMines(gBoard)
-        document.querySelector('.hints').classList.toggle('disabled')
-        gTimerInterval = setInterval(startTimer, 1000)
-    }
-    if (!gGame.isOn) return
-    if (!cell.minesAroundCount && !cell.isMine) expandShown(gBoard, { i, j })
-    renderBoard(gBoard)
-    if (cell.isMine) {
-        gLives--
-        gHealthBar = gHealthBar.slice(0, gHealthBar.length - 2)
-        document.querySelector('.lives').innerText = gHealthBar
-        if (!gLives) gameOver()
-    }
-    if (checkGameOver()) gameOver()
 }
 
 // DONE: Called on right click to mark a
@@ -151,8 +184,11 @@ function cellClicked(i, j) {
 // context menu on right click
 function cellMarked(i, j) {
     var cell = gBoard[i][j]
+
     if (cell.isShown) return
-    if (!gGame.isOn && gGame.shownCount) return
+
+    if (!gGame.isOn) return
+
     cell.isMarked = !cell.isMarked
     if (cell.isMarked && cell.isMine) gGame.markedCount++
     else if (cell.isMine) gGame.markedCount--
@@ -164,7 +200,7 @@ function cellMarked(i, j) {
 // marked, and all the other cells
 // are shown
 function checkGameOver() {
-    return gGame.shownCount + gGame.markedCount === gLevel.SIZE ** 2
+    return gGame.shownCount + gGame.markedCount === gLevel.SIZE ** 2 || !gLives
 }
 
 // DONE: When user clicks a cell with no
@@ -217,7 +253,6 @@ function placeMines(board) {
         var randPos = randPositions.splice(randIdx, 1)[0]
         board[randPos.i][randPos.j].isMine = true
     }
-    setMinesNegsCount(gBoard)
 }
 
 function gameOver() {
@@ -241,6 +276,7 @@ function gameOver() {
 }
 
 function restartGame() {
+    deactivateAllBtns()
     clearInterval(gTimerInterval)
     gGame.isOn = false
     gGame.shownCount = 0
@@ -267,4 +303,11 @@ function setDifficulty(size, mines) {
     gLevel.SIZE = size
     gLevel.MINES = mines
     restartGame()
+}
+
+function deactivateAllBtns() {
+    var elButtons = document.querySelectorAll('button')
+    for (var i = 0; i < elButtons.length; i++) {
+        elButtons[i].classList.remove('activated')
+    }
 }

@@ -11,8 +11,17 @@ body {
 button {
     border-radius: 25px;
     padding: 16px;
-    border: 0px;
+    cursor: pointer;
+    background-color: rgb(255, 194, 95);
+    color: rgb(187 29 128);
     font-size: 16px;
+    font-weight: bold;
+    border: 0px;
+    margin: 4px;
+}
+
+button:hover {
+    background-color: rgb(255, 157, 0);
 }
 
 .timer {
@@ -24,49 +33,41 @@ button {
     padding-top: 10px;
 }
 
-.difficulties button {
-    cursor: pointer;
-    color: rgb(223, 223, 223);
-    background-color: rgb(32, 32, 32);
-}
-
-.difficulties button:hover {
-    background-color: rgb(16, 16, 16);
-}
-
 .lives {
     display: inline-block;
-    margin-right: 25px;
 }
 
-.hints {
-    margin-left: 25px;
-    font-size: 25px;
-    cursor: pointer;
-    background-color: rgb(16, 16, 16);
-    margin-top: 2%;
-    color: rgb(223, 223, 223);
+.activated {
+    outline: 2px solid rgb(128, 32, 32);
 }
 
-.hints:hover {
-    outline: white 1px solid;
-}
-
-.hints.activated {
-    outline: 2px solid yellow;
-    background-color: rgb(128, 32, 32);
-}
-
-.hints.disabled {
+.disabled {
     background-color: gray;
+    color: black;
     cursor: auto;
-
     outline: none;
+}
+
+.disabled:hover {
+    outline: none;
+    background-color: gray;
 }
 
 .smiley {
     display: block;
     margin: auto;
+    padding: 0px;
+    padding-bottom: 12px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.smiley:hover {
+    background-color: rgb(128, 32, 32);
+}
+
+.smiley:active {
+    background-color: rgb(102, 0, 0);
 }
 
 .board {
@@ -109,6 +110,11 @@ td {
 
 .marked:hover {
     background-color: rgb(255, 169, 30);
+}
+
+.safe-cell {
+    transition: 0.2s;
+    outline: rgb(187 29 128) 4px solid;
 }
 
 .smiley {

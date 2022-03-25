@@ -9,13 +9,16 @@
     </head>
     <body onload="initGame()">
         <div class="difficulties">
-            <button onclick="setDifficulty(4,2)">EASY</button>
-            <button onclick="setDifficulty(8,12)">MEDIUM</button>
-            <button onclick="setDifficulty(12,30)">HARD</button>
+            <button class="size4" onclick="setDifficulty(4,2)">EASY</button>
+            <button class="size8" onclick="setDifficulty(8,12)">MEDIUM</button>
+            <button class="size12" onclick="setDifficulty(12,30)">HARD</button>
         </div>
+        <button class="manual-place" onclick="toggleManualPos(this)"></button>
+        <button class="seven-boom" onclick="toggleSevenBoomMode(this)">7 BOOM</button>
         <button class="smiley" onclick="restartGame()"></button>
         <div class="timer"></div>
         <div class="best-time">BEST TIME: <span></span></div>
+        <button class="safe-clicks" onclick="markSafeCell()"></button>
         <h1 class="lives"></h1>
         <button class="hints" onclick="toggleHint(this)"></button>
         <table class="board">
@@ -24,8 +27,12 @@
         <footer>
             <p>©️ Uri Gruda</p>
         </footer>
+
         <script src="js/util.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/bonus.js"></script>
+        <script src="js/hints.js"></script>
+        <script src="js/safeclick.js"></script>
+        <script src="js/manualpos.js"></script>
+        <script src="js/sevenboom.js"></script>
     </body>
 </html>
