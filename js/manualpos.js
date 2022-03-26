@@ -20,4 +20,6 @@ function hideAllCells(board) {
             board[i][j].isShown = false
         }
     }
+    gGame.shownCount = 0
+    gGame.markedCount = 0
 }

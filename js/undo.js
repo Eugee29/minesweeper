@@ -6,6 +6,13 @@ var gameStages
 
 function undoMove(elBtn) {
     if (!gGame.isOn || !gameStages.length) return
+    if (gameStages.length === 1) {
+        console.log('here')
+        hideAllCells(gBoard)
+        elBtn.classList.add('disabled')
+        renderBoard(gBoard)
+        return
+    }
     var gameStage = gameStages.pop()
     if (!gameStages.length) elBtn.classList.add('disabled')
     gGame.shownCount = gameStage.shownCount
