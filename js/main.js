@@ -59,9 +59,7 @@ function initGame() {
     gHintMode = false
     gManualPosMode = false
     gSevenBoomMode = false
-    var elHints = document.querySelector('.hints')
-    elHints.innerText = HINT + ' x ' + gHints
-    elHints.classList.add('disabled')
+    document.querySelector('.hints').innerHTML = `<button class="disabled" onclick="toggleHint(this)">${HINT}</button><button class="disabled" onclick="toggleHint(this)">${HINT}</button><button class="disabled" onclick="toggleHint(this)">${HINT}</button>`
     var elSafeClicks = document.querySelector('.safe-clicks')
     elSafeClicks.innerText = SAFE_CLICK + ' x ' + gSafeClick
     elSafeClicks.classList.add('disabled')
@@ -147,13 +145,13 @@ function cellClicked(i, j) {
         }
         renderBoard(gBoard)
     } else if (gHintMode) {
-        var elHints = document.querySelector('.hints')
-        elHints.classList.toggle('activated')
+        var elHint = document.querySelector('.hints .activated')
+        elHint.classList.remove('activated')
+        elHint.classList.add('disabled')
         revealNegs(gBoard, { i, j })
+        renderBoard(gBoard)
         gHintMode = false
         gHints--
-        if (!gHints) elHints.classList.toggle('disabled')
-        elHints.innerText = '💡 x ' + gHints
         renderBoard(gBoard)
         gameStages.pop()
     } else {
@@ -161,7 +159,8 @@ function cellClicked(i, j) {
         gGame.shownCount++
         if (!gGame.isOn) {
             gTimerInterval = setInterval(startTimer, 1000)
-            document.querySelector('.hints').classList.toggle('disabled')
+            var elHints = document.querySelectorAll('.hints button')
+            for (var i = 0; i < elHints.length; i++) elHints[i].classList.toggle('disabled')
             document.querySelector('.safe-clicks').classList.toggle('disabled')
             gGame.isOn = !gGame.isOn
             if (!gAreMinesPlaced) {

@@ -39,7 +39,12 @@ button:hover {
 }
 
 .lives {
+    display: block;
+}
+
+.hints {
     display: inline-block;
+    margin-right: 230px;
 }
 
 .activated {

@@ -8,8 +8,18 @@ var gBestScore
 
 function toggleHint(elHint) {
     if (!gHints || !gGame.isOn) return
-    gHintMode = !gHintMode
-    elHint.classList.toggle('activated')
+
+    if (elHint.classList.contains('activated')) {
+        elHint.classList.remove('activated')
+        gHintMode = false
+        return
+    }
+
+    var elActiveBtn = document.querySelector('.hints .activated')
+    if (elActiveBtn) elActiveBtn.classList.toggle('activated')
+
+    gHintMode = true
+    if (gHintMode) elHint.classList.add('activated')
 }
 
 function revealNegs(board, pos) {
