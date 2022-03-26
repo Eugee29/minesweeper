@@ -50,6 +50,7 @@ function initGame() {
     document.querySelector('.best-time span').innerText = localStorage.getItem('bestScore')
     document.querySelector(`.size${gLevel.SIZE}`).classList.toggle('activated')
     gHealthBar = LIFE + LIFE + LIFE
+    gameStages = []
     gMinesPlaced = 0
     gSafeClick = 3
     gLives = 3
@@ -68,6 +69,7 @@ function initGame() {
     document.querySelector('.lives').innerText = gHealthBar
     document.querySelector('.smiley').innerText = NORMAL
     document.querySelector('.timer').innerText = gGame.secsPassed
+    document.querySelector('.undo').classList.add('disabled')
     buildBoard()
     renderBoard(gBoard)
 }
@@ -130,6 +132,8 @@ function cellClicked(i, j) {
 
     if (checkGameOver()) return
 
+    addGameStage()
+
     if (gManualPosMode && !cell.isMine) {
         cell.isMine = true
         cell.isShown = true
@@ -151,6 +155,7 @@ function cellClicked(i, j) {
         if (!gHints) elHints.classList.toggle('disabled')
         elHints.innerText = '💡 x ' + gHints
         renderBoard(gBoard)
+        gameStages.pop()
     } else {
         cell.isShown = true
         gGame.shownCount++
@@ -159,12 +164,11 @@ function cellClicked(i, j) {
             document.querySelector('.hints').classList.toggle('disabled')
             document.querySelector('.safe-clicks').classList.toggle('disabled')
             gGame.isOn = !gGame.isOn
-        }
-
-        if (!gAreMinesPlaced) {
-            placeMines(gBoard)
-            setMinesNegsCount(gBoard)
-            gAreMinesPlaced = true
+            if (!gAreMinesPlaced) {
+                placeMines(gBoard)
+                setMinesNegsCount(gBoard)
+                gAreMinesPlaced = true
+            }
         }
         if (!cell.minesAroundCount && !cell.isMine) expandShown(gBoard, { i, j })
         renderBoard(gBoard)
@@ -188,6 +192,8 @@ function cellMarked(i, j) {
     if (cell.isShown) return
 
     if (!gGame.isOn) return
+
+    addGameStage()
 
     cell.isMarked = !cell.isMarked
     if (cell.isMarked && cell.isMine) gGame.markedCount++
@@ -260,6 +266,7 @@ function gameOver() {
     clearInterval(gTimerInterval)
     var elSmiley = document.querySelector('.smiley')
     if (gLives === 0) {
+        document.querySelector('.lives').innerText = '☠️'
         elSmiley.innerText = LOSE
         revealAllMines(gBoard)
         renderBoard(gBoard)
