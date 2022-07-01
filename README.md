@@ -1,4 +1,4 @@
-# Mine Sweeper
+# Minesweeper
 
 My very first project, made with vanilla JavaScript.
 
